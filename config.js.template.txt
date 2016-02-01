@@ -1,0 +1,34 @@
+// configure the slack and jira portions
+// to enable talking between both services
+// then copy this file to config.js
+
+module.exports = {
+  slack: {
+    apiToken: '', // generate this on slack
+    token: '', // generate this on slack
+    webhook: '', // generate this on slack
+    botName: 'buggy', //name it whatever you want
+    botIconEmoji: 'bug' // assign the bot an emoji icon
+    // botIconUrl: '' // or assign it to some hosted image somewhere
+  },
+  jira: {
+    host: '',
+    basic_auth: {
+      /*
+      username: '',
+      password: '',
+      */
+      base64: ''
+    }
+    /*
+    oauth: {
+      token: '',
+      token_secret: '',
+      consumer_key: '',
+      private_key: '-----BEGIN RSA PRIVATE KEY-----\n' +
+                   'alskdjflaskjflsdf' +
+                   '-----END RSA PRIVATE KEY-----\n'
+    }
+    */
+  }
+};

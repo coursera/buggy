@@ -55,6 +55,6 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
   }
 });
 
-assign.setHelp('_resolve|stop|close|reopen|start|review_ issueKey', 'transitions an issue to a new status. possible choices are resolve, stop, start, review or reopen');
+transition.setHelp('_resolve|stop|close|reopen|start|review_ issueKey', 'transitions an issue to a new status. possible choices are resolve, stop, start, review or reopen');
 
 module.exports = transition;

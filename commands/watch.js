@@ -35,6 +35,6 @@ var watch = new Command('watch', function(slack, jira, context) {
   }
 });
 
-assign.setHelp('watch issueKey', 'adds you as a watcher to a bug');
+watch.setHelp('watch issueKey', 'adds you as a watcher to a bug');
 
 module.exports = watch;

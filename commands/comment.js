@@ -43,6 +43,6 @@ var comment = new Command('comment', function(slack, jira, context) {
   }
 });
 
-assign.setHelp('comment issueKey _your comments here_', 'comment on an issue');
+comment.setHelp('comment issueKey _your comments here_', 'comment on an issue');
 
 module.exports = comment;

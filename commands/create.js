@@ -1,12 +1,25 @@
 var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
+var SlackUtils = require('../slack/util');
 
 var create = new Command('create', function(slack, jira, context) {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var projectKey = tokenized[1].toUpperCase();
   var summary = tokenized[2];
   var description = tokenized[3] || '';
+
+  var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
+  
+  if (slackPermalink !== null) {
+
+    // Add some spacing if there's a user-supplied description too
+    if (description.length) {
+      description += '\n\n';
+    }
+
+    description += 'Slack conversation where this bug was reported: ' + slackPermalink;
+  }
 
   if (projectKey && summary) {
     var fields = {

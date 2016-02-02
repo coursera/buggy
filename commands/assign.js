@@ -9,7 +9,14 @@ var assign = new Command('assign', function(slack, jira, context) {
   var hasIssue = /(\w+)-(\d+)/.test(issue);
 
   if (hasIssue) {
-    jira.issue.assignIssue({'issueKey':issue, 'assignee':user}, function(err, confirm) {
+    var options = {
+      'issueKey': issue,
+      'assignee': user,
+      'update': {
+        'comment': [{'add':{'body': slack.user_name + ' assigned to ' + user + ' via /buggy'}}]
+      }
+    };
+    jira.issue.assignIssue(options, function(err, confirm) {
       if (err) {
         console.log(err);
         var errMessage = new Message('oops. i was unable to complete the assignment.');

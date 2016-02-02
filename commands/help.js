@@ -15,8 +15,9 @@ var help = new Command(/help/, function(slack, jira, context) {
   var text = fullHelp ? '' : 'i can do many buggy things, like:\n\n';
 
   fs.readdirSync('./commands').forEach(function(file) {
-    if (file != 'help.js') {
-      var module = require('./' + file);
+    var moduleName = path.basename(file, '.js');
+    if (moduleName != 'help') {
+      var module = require('./' + moduleName);
       if (module && module.getHelp) {
         var commandHelp = module.getHelp();
 
@@ -24,7 +25,7 @@ var help = new Command(/help/, function(slack, jira, context) {
           if (commandHelp) {
             text += slack.command + ' ' + commandHelp.command + '\n';
           }
-        } else if (fullHelp && commandHelp && module.matches(path.basename(file, '.js'))) {
+        } else if (fullHelp && commandHelp && module.matches(command)) {
           text = slack.command + ' ' + commandHelp.command + '\n' + commandHelp.text + '\n';
         }
       }

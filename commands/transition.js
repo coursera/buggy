@@ -28,7 +28,17 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
         transitionId = "711"; break;
     };
 
-    jira.issue.transitionIssue({'issueKey':issue, 'transition':{id:transitionId}}, function(err, confirm) {
+    var options = {
+      'issueKey': issue,
+      'transition': {
+        id: transitionId
+      },
+      'fields': {
+        'assignee': { name: slack.user_name },
+      }
+    };
+
+    jira.issue.transitionIssue(options, function(err, confirm) {
       if (err) {
         console.log(err);
         var errMessage = new Message('oops. i was unable to resolve the issue.');

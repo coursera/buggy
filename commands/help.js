@@ -8,30 +8,27 @@ var help = new Command(/help/, function(slack, jira, context) {
   var tokenized = /help(?:\s+([^\s]+))?/.exec(slack.text.trim());
   var command = tokenized[1];
 
-  console.log('let\'s help some folks out ', command);
-
   var fullHelp = !command;
   var text = fullHelp ? '' : 'i can do many buggy things, like:\n\n';
 
   fs.readdirSync('./commands').forEach(function(file) {
     var moduleName = path.basename(file, '.js');
-    console.log('module name ', moduleName);
     if (moduleName != 'help') {
       var module = require('./' + file);
       if (module && module.getHelp) {
         var commandHelp = module.getHelp();
 
         if (commandHelp) {
-          if (!fullHelp) {
+          if (fullHelp) {
             text += slack.command + ' ' + commandHelp.command + '\n';
           } else if (module.matches(command)) {
-            text = slack.command + ' ' + commandHelp.command + '\n' + commandHelp.text + '\n';
+            text += slack.command + ' ' + commandHelp.command + '\n' + commandHelp.text + '\n';
           }
         }
       }
-    } else if (!fullHelp) {
+    } else if (fullHelp) {
       text += slack.command + 'help\n';
-    } else if (fullHelp && command === 'help') {
+    } else if (command === 'help') {
       text += slack.command + 'help\n';
       text += 'helps you again and again\n\n';
     }

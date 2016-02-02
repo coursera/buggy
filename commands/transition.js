@@ -28,7 +28,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
         transitionId = "711"; break;
     };
 
-    jira.issue.addWatcher({'issueKey':issue, 'transition':{id:transitionId}}, function(err, confirm) {
+    jira.issue.transitionIssue({'issueKey':issue, 'transition':{id:transitionId}}, function(err, confirm) {
       if (err) {
         console.log(err);
         var errMessage = new Message('oops. i was unable to resolve the issue.');

@@ -11,7 +11,7 @@ var create = new Command('create', function(slack, jira, context) {
 
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
   
-  if (slackPermalink !== null && slack.channel_name !== 'directmessage') {
+  if (slackPermalink !== null) {
     description += '\n\nSlack conversation where this bug was reported: ' + slackPermalink;
   }
 

@@ -9,7 +9,7 @@ var help = new Command(/help/, function(slack, jira, context) {
   var command = tokenized[1];
 
   var fullHelp = !command;
-  var text = fullHelp ? '' : 'i can do many buggy things, like:\n\n';
+  var text = fullHelp ? 'happy to help! i can do many buggy things, like:\n\n' : slack.command + ' ' + slack.text + '\n\n';
 
   fs.readdirSync('./commands').forEach(function(file) {
     var moduleName = path.basename(file, '.js');
@@ -27,14 +27,14 @@ var help = new Command(/help/, function(slack, jira, context) {
         }
       }
     } else if (fullHelp) {
-      text += slack.command + 'help\n';
+      text += slack.command + ' help\n';
     } else if (command === 'help') {
       text += slack.command + 'help\n';
       text += 'helps you again and again\n\n';
     }
   });
 
-  if (!fullHelp) {
+  if (fullHelp) {
     text += slack.command + ' ?\n';
   } else if (command && text === '') {
     text += 'i can not help you with _' + command + '_ right now.';

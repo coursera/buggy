@@ -24,7 +24,7 @@ var help = new Command(/help/, function(slack, jira, context) {
           if (commandHelp) {
             text += slack.command + ' ' + commandHelp.command + '\n';
           }
-        } else if (commandHelp && module.matches(path.basename(file, '.js'))) {
+        } else if (fullHelp && commandHelp && module.matches(path.basename(file, '.js'))) {
           text = slack.command + ' ' + commandHelp.command + '\n' + commandHelp.text + '\n';
         }
       }

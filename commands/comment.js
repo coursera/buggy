@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('comment', function(slack, jira, context) {
+var comment = new Command('comment', function(slack, jira, context) {
   var tokenized = /comment\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var comment = tokenized[2];
@@ -45,4 +45,4 @@ var assign = new Command('comment', function(slack, jira, context) {
 
 assign.setHelp('comment issueKey _your comments here_', 'comment on an issue');
 
-module.exports = assign;
+module.exports = comment;

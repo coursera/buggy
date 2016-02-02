@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('watch', function(slack, jira, context) {
+var watch = new Command('watch', function(slack, jira, context) {
   var tokenized = /watch\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
@@ -37,4 +37,4 @@ var assign = new Command('watch', function(slack, jira, context) {
 
 assign.setHelp('watch issueKey', 'adds you as a watcher to a bug');
 
-module.exports = assign;
+module.exports = watch;

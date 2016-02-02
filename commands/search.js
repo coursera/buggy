@@ -14,7 +14,7 @@ var search = new Command('search', function(slack, jira, context) {
 
     text = text.replace(/"/g, '\\"');
 
-    jira.search.search({'jql':'text ~ "' + text + '"'}, function(err, results) {
+    jira.search.search({'jql':'text ~ "' + text + '" AND Status not in (Resolved, Closed)'}, function(err, results) {
       if (err) {
         var errMessage = new Message('i\'m sorry but i couldn\'t find anything. maybe it doesn\'t exist?');
         response.send(slack.response_url, errMessage, context.done);
@@ -35,6 +35,6 @@ var search = new Command('search', function(slack, jira, context) {
   }
 });
 
-search.setHelp("\"search string\"", "search issues");
+search.setHelp("\"search string\"", "search only open issues");
 
 module.exports = search;

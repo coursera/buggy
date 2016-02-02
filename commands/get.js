@@ -26,7 +26,7 @@ var get = new Command(/get/, function(slack, jira, context) {
   } else {
     if (/^@/.test(getIssue)) {
       userCommand.run(slack, jira, context);
-    } else if (/^".+"$/.test(getIssue)) {
+    } else if (/^("|“|').+("|'|”)$/.test(getIssue)) {
       searchCommand.run(slack, jira, context);
     } else if (!getIssue) {
       response.send(slack.response_url, new Message('yes?'), context.done);

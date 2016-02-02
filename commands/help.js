@@ -29,7 +29,7 @@ var help = new Command(/help/, function(slack, jira, context) {
     } else if (fullHelp) {
       text += slack.command + ' help\n';
     } else if (command === 'help') {
-      text += slack.command + 'help\n';
+      text += slack.command + ' help\n';
       text += 'helps you again and again\n\n';
     }
   });

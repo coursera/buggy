@@ -19,7 +19,7 @@ var assign = new Command('assign', function(slack, jira, context) {
         var message = new Message(text);
         message.setResponseType(true);
         message.addAttachment({
-          title: slack.user_name + ' assigned ' + issue + ' to ' + user,
+          title: slack.user_name + ' assigned ' + issue + ' to ' + '@' + user,
           title_link: 'https://' + jira.host + '/browse/' + issue,
           fallback: slack.user_name + ' assigned ' + issue + ' to ' + user,
           color: 'good'

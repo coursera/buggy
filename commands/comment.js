@@ -10,7 +10,7 @@ var comment = new Command('comment', function(slack, jira, context) {
 
   if (hasIssue) {
     var jiraComment = {
-      body: comment
+      body: comment + '\n\n by ' + slack.user_name + ' via ' + slack.command
       // // jira's rest api doesn't support this yet
       // author: {
       //   name: slack.user_name

@@ -34,7 +34,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
         transition: {
           id: transitionId,
         },
-        fields: {
+        update: {
           'assignee': { name: slack.user_name },
         }
       }
@@ -43,7 +43,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
     jira.issue.transitionIssue(options, function(err, confirm) {
       if (err) {
         console.log(err);
-        var errMessage = new Message('oops. i was unable to resolve the issue.');
+        var errMessage = new Message('oops. i was unable to transition the issue.');
         response.send(slack.response_url, errMessage, context.done);
       } else {
         var text = slack.command + ' ' + slack.text;

@@ -11,30 +11,32 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
   var hasIssue = /(\w+)-(\d+)/.test(issue);
 
   if (hasIssue) {
-    var transitionId = "0";
+    var transitionId = '0';
 
     switch(verb) {
-      case "resolve":
-        transitionId = "5"; break;
-      case "stop":
-        transitionId = "301"; break;
-      case "start":
-        transitionId = "4"; break;
-      case "reopen":
-        transitionId = "3"; break;
-      case "close":
-        transitionId = "2"; break;
-      case "review":
-        transitionId = "711"; break;
+      case 'resolve':
+        transitionId = '5'; break;
+      case 'stop':
+        transitionId = '301'; break;
+      case 'start':
+        transitionId = '4'; break;
+      case 'reopen':
+        transitionId = '3'; break;
+      case 'close':
+        transitionId = '2'; break;
+      case 'review':
+        transitionId = '711'; break;
     };
 
     var options = {
-      'issueKey': issue,
-      'transition': {
-        id: transitionId
-      },
-      'fields': {
-        'assignee': { name: slack.user_name },
+      issueKey: issue,
+      transition: {
+        transition: {
+          id: transitionId,
+          fields: {
+            'assignee': { name: slack.user_name },
+          }
+        }
       }
     };
 

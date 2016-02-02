@@ -41,6 +41,6 @@ var create = new Command('create', function(slack, jira, context) {
   }
 });
 
-create.setHelp('create projectKey title here [ | description here ]', 'create a new issue');
+create.setHelp('create projectKey _a title_ [ | _a description_ ]', 'create a new issue');
 
 module.exports = create;

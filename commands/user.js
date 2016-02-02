@@ -10,7 +10,7 @@ var user = new Command('user', function(slack, jira, context) {
   var firstResponse = 'ok! i\'m going to bug ' + user + ' for you';
 
   response.send(slack.response_url, new Message(firstResponse), function() {
-    var message = new Message(':ant:', true);
+    var message = new Message(':ant:  _(' + slack.user_name + ' made me do it)_', true);
     response.sendTo(user, message, context.done);
   });
 });

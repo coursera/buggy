@@ -10,13 +10,22 @@ var assign = new Command('assign', function(slack, jira, context) {
 
   if (hasIssue) {
     var options = {
-      'issueKey': issue,
-      'assignee': user,
-      'update': {
-        'comment': [{'add':{'body': slack.user_name + ' assigned to ' + user + ' via /buggy'}}]
+      issueKey: issue,
+      issue: {
+        fields: {
+          'assignee': {name: user},
+        },
+        update: {
+          comment: [{
+              add: {
+                body: slack.user_name + ' assigned this issue to ' + user + ' via /buggy'
+              }
+          }]
+        }
       }
     };
-    jira.issue.assignIssue(options, function(err, confirm) {
+
+    jira.issue.editIssue(options, function(err, confirm) {
       if (err) {
         console.log(err);
         var errMessage = new Message('oops. i was unable to complete the assignment.');

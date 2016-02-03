@@ -33,11 +33,10 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
       transition: {
         transition: {
           id: transitionId,
-        }/*,
+        },
         fields: {
           'assignee': { name: slack.user_name },
         }
-        */
       }
     };
 

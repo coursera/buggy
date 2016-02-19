@@ -5,17 +5,17 @@ var SlackUtils = require('../slack/util');
 
 var create = new Command('create', function(slack, jira, context) {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
-  var projectKey = tokenized[1].toUpperCase();
-  var summary = tokenized[2];
-  var description = tokenized[3] || '';
-
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
   
   if (slackPermalink !== null) {
     description += '\n\nSlack conversation where this bug was reported: ' + slackPermalink;
   }
 
-  if (projectKey && summary) {
+  if (tokenized && tokenized.length >= 3) {
+    var projectKey = tokenized[1].toUpperCase();
+    var summary = tokenized[2];
+    var description = tokenized[3] || '';
+
     var fields = {
       project: {key: projectKey},
       summary: summary,
@@ -43,7 +43,7 @@ var create = new Command('create', function(slack, jira, context) {
       }
     });
   } else {
-    var noMessage = Message('you forgot to tell me what to create!');
+    var noMessage = Message('i need a project and a description to create issues');
     response.send(slack.response_url, noMessage, context.done);
   }
 });

@@ -7,14 +7,14 @@ var create = new Command('create', function(slack, jira, context) {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
   
-  if (slackPermalink !== null) {
-    description += '\n\nSlack conversation where this bug was reported: ' + slackPermalink;
-  }
-
   if (tokenized && tokenized.length >= 3) {
     var projectKey = tokenized[1].toUpperCase();
     var summary = tokenized[2];
     var description = tokenized[3] || '';
+
+    if (slackPermalink !== null) {
+      description += '\n\nSlack conversation where this bug was reported: ' + slackPermalink;
+    }
 
     var fields = {
       project: {key: projectKey},

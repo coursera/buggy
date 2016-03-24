@@ -1,17 +1,16 @@
 {
   "name": "buggy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "integrate jira and slack with a custom slash command and an incoming webhook",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.2.33",
+    "express": "^4.13.4",
     "jira-connector": "^1.11.0",
     "request": "^2.69.0",
     "slack-node": "^0.1.7"
   },
   "devDependencies": {},
-  "scripts": {
-  },
+  "scripts": {},
   "author": "eleith",
   "license": "Apache 2.0"
 }

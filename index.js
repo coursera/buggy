@@ -21,7 +21,7 @@ module.exports = function(config) {
     } else {
       while(commands.length > 0) {
         var module = commands.pop();
-        var command = require('./commands/' + module);
+        var command = require(__dirname + '/commands/' + module);
   
         if (command.matches(commandText)) {
           commandRun = true;

@@ -14,7 +14,7 @@ module.exports = function(config) {
     var commandText = (params.text || '').split(' ')[0];
     var commandDefault;
     var commandRun = false;
-    var commands = fs.readdirSync('./commands');
+    var commands = fs.readdirSync(__dirname + '/commands');
   
     if (requestToken !== config.slack.token) {
       res.status(403).send('Invalid request token ' + requestToken);

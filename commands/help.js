@@ -11,7 +11,7 @@ var help = new Command(/help/, function(slack, jira) {
   var fullHelp = !command;
   var text = fullHelp ? 'happy to help! i can do many buggy things, like:\n\n' : slack.command + ' ' + slack.text + '\n\n';
 
-  fs.readdirSync('./commands').forEach(function(file) {
+  fs.readdirSync(__dirname + '/commands').forEach(function(file) {
     var moduleName = path.basename(file, '.js');
     if (moduleName != 'help') {
       var module = require('./' + file);

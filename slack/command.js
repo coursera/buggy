@@ -12,7 +12,7 @@ Command.prototype.setHelp = function(command, text) {
 };
 
 Command.prototype.run = function(slack, jira, context) {
-  this.handler(slack, jira, context);  
+  return this.handler(slack, jira, context);  
 };
 
 Command.prototype.getHelp = function() {

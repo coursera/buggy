@@ -1,6 +1,6 @@
 {
   "name": "buggy",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "integrate jira and slack with a custom slash command and an incoming webhook",
   "main": "index.js",
   "dependencies": {

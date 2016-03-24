@@ -3,7 +3,7 @@ var Message = require('../slack/message');
 var Command = require('../slack/command');
 var SlackUtils = require('../slack/util');
 
-var create = new Command('create', function(slack, jira, context) {
+var create = new Command('create', function(slack, jira) {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
   
@@ -28,7 +28,7 @@ var create = new Command('create', function(slack, jira, context) {
     jira.issue.createIssue({fields:fields}, function(err, issue) {
       if (err) {
         var errMessage = new Message('i was not able to create anything.');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var message = new Message(slack.command + ' ' + slack.text);
         message.setResponseType(true);
@@ -39,12 +39,11 @@ var create = new Command('create', function(slack, jira, context) {
           color: 'good'
         });
 
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message);
       }
     });
   } else {
-    var noMessage = Message('i need a project and a description to create issues');
-    response.send(slack.response_url, noMessage, context.done);
+    return Message('i need a project and a description to create issues');
   }
 });
 

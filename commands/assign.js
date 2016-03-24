@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('assign', function(slack, jira, context) {
+var assign = new Command('assign', function(slack, jira) {
   var tokenized = /assign\s+([^\s]+)\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[2];
   var user = tokenized[1].replace(/^@/, '');
@@ -27,9 +27,8 @@ var assign = new Command('assign', function(slack, jira, context) {
 
     jira.issue.editIssue(options, function(err, confirm) {
       if (err) {
-        console.log(err);
         var errMessage = new Message('oops. i was unable to complete the assignment.');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var text = slack.command + ' ' + slack.text;
         var message = new Message(text);
@@ -40,15 +39,13 @@ var assign = new Command('assign', function(slack, jira, context) {
           fallback: slack.user_name + ' assigned ' + issue + ' to ' + user,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message);
       }
     });
   } else if (user) {
-    var noMessage = new Message('i need a valid issue to assign.');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('i need a valid issue to assign.');
   } else {
-    var badMessage = new Message('you forgot to tell me what or who to assign.');
-    response.send(slack.response_url, badMessage, context.done);
+    return new Message('you forgot to tell me what or who to assign.');
   }
 });
 

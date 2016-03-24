@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var comment = new Command('comment', function(slack, jira, context) {
+var comment = new Command('comment', function(slack, jira) {
   var tokenized = /comment\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var comment = tokenized[2];
@@ -16,11 +16,11 @@ var comment = new Command('comment', function(slack, jira, context) {
       //   name: slack.user_name
       // }
     };
+
     jira.issue.addComment({'issueKey':issue, 'comment':jiraComment}, function(err, confirm) {
       if (err) {
-        console.log(err);
         var errMessage = new Message('oops. i was unable to add the comment.');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var text = slack.command + ' ' + slack.text;
         var message = new Message(text);
@@ -31,15 +31,13 @@ var comment = new Command('comment', function(slack, jira, context) {
           fallback: slack.user_name + ' commented on ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message);
       }
     });
   } else if (comment) {
-    var noMessage = new Message('i need a valid issue to comment on.');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('i need a valid issue to comment on.');
   } else {
-    var badMessage = new Message('you forgot to tell me what your comment is.');
-    response.send(slack.response_url, badMessage, context.done);
+    return new Message('you forgot to tell me what your comment is.');
   }
 });
 

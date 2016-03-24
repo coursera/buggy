@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var watch = new Command('watch', function(slack, jira, context) {
+var watch = new Command('watch', function(slack, jira) {
   var tokenized = /watch\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
@@ -12,7 +12,7 @@ var watch = new Command('watch', function(slack, jira, context) {
       if (err) {
         console.log(err);
         var errMessage = new Message('oops. i was unable to add you as a watcher.');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var text = slack.command + ' ' + slack.text;
         var message = new Message(text);
@@ -23,15 +23,13 @@ var watch = new Command('watch', function(slack, jira, context) {
           fallback: slack.user_name + ' is now watching ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message);
       }
     });
   } else if (user) {
-    var noMessage = new Message('i need a valid issue to watch.');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('i need a valid issue to watch.');
   } else {
-    var badMessage = new Message('you forgot to tell me which issue to watch.');
-    response.send(slack.response_url, badMessage, context.done);
+    return new Message('you forgot to tell me which issue to watch.');
   }
 });
 

@@ -4,7 +4,7 @@ var Command = require('../slack/command');
 var fs = require('fs');
 var path = require('path');
 
-var help = new Command(/help/, function(slack, jira, context) {
+var help = new Command(/help/, function(slack, jira) {
   var tokenized = /help(?:\s+([^\s]+))?/.exec(slack.text.trim());
   var command = tokenized[1];
 
@@ -40,8 +40,7 @@ var help = new Command(/help/, function(slack, jira, context) {
     text += 'i can not help you with _' + command + '_ right now.';
   }
 
-  var message = new Message(text);
-  response.sendTo(slack.user_name, message, context.done);
+  return new Message(text);
 });
 
 module.exports = help;

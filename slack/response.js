@@ -3,7 +3,7 @@ var config = require('../config');
 var SlackApi = require('slack-node');
 
 module.exports = {
-  send: function(url, message, callback) {
+  send: function(url, message) {
 
     var options = {
       url: url,
@@ -11,12 +11,18 @@ module.exports = {
       json: message.getResponse()
     };
 
-    request(options, function(error, res, body) {
-      callback();
+    return new Promise((resolve, reject) => { 
+      request(options, (error, res, body) => { 
+        if (error) {
+          reject(error);
+        } else {
+          resolve(res);
+        }
+      });
     });
   },
 
-  sendTo: function(user, message, callback) {
+  sendTo: function(user, message) {
     message.setUsername(config.slack.botName);
 
     if (config.slack.botIconUrl) {
@@ -33,12 +39,18 @@ module.exports = {
       json: message.getResponse()
     };
 
-    request(options, function(error, res, body) {
-      callback();
+    return new Promise((resolve, reject) => { 
+      request(options, (error, res, body) => { 
+        if (error) {
+          reject(error);
+        } else {
+          resolve(res);
+        }
+      });
     });
   },
 
-  sendFrom: function(user_id, channel_id, message, callback) {
+  sendFrom: function(user_id, channel_id, message) {
     message.setChannel(channel_id);
 
     var slackApi = new SlackApi(config.slack.apiToken);
@@ -55,8 +67,14 @@ module.exports = {
         json: message.getResponse()
       };
 
-      request(options, function(error, res, body) {
-        callback();
+      return new Promise((resolve, reject) => { 
+        request(options, (error, res, body) => { 
+          if (error) {
+            reject(error);
+          } else {
+            resolve(res);
+          }
+        });
       });
     });
   }

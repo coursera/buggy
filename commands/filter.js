@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var filter = new Command('filter', function(slack, jira, context) {
+var filter = new Command('filter', function(slack, jira) {
   var tokenized = slack.text.trim().split(' ');
 
   if (tokenized.length > 1) {
@@ -13,7 +13,7 @@ var filter = new Command('filter', function(slack, jira, context) {
     jira.search.search({'jql':jql}, function(err, results) {
       if (err) {
         var errMessage = new Message(' ... looks like your filtered everything out!');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var message = new Message(slack.command + ' ' + slack.text);
         message.setResponseType(true);
@@ -22,12 +22,11 @@ var filter = new Command('filter', function(slack, jira, context) {
           message.attachIssue(results.issues[i], true);
         } 
 
-        response.sendTo(slack.user_name, message, context.done);
+        response.sendTo(slack.user_name, message);
       }
     });
   } else {
-    var noMessage = new Message('you forgot to tell me what filter you want to use!');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('you forgot to tell me what filter you want to use!');
   }
 });
 

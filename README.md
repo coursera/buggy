@@ -66,25 +66,37 @@ jira also supports sending down a base64 of 'username:password'. to generate thi
 echo -n 'username:password' | base64
 ```
 
-# lambda
+# install
 
-## creating your function
+## npm
 
-create a new function on lambda using a node blueprint.
+install the package directly from github with npm
 
-you'll now need to configure the API gateway to not require authentication, so the apis can be publicly accessible.
+```
+npm install git@github.com:coursera/buggy.git
+```
 
-this script responds to slack using the delayed response method, but lambda still forces a null to be returned. turn off these responses if you don't want slack to see these. follow the instructions here on how to do that: https://medium.com/@farski/learn-aws-api-gateway-with-the-slack-police-ca8d636e9fc0#.gyf8r77cr
+## wire up this router to an existing express server
 
-please be warned, lambda only allows node v0.10. that means no es6 and problems with oauth.
+this module exposes a modular express router that can be wired up to any existing express router. 
 
-## packaging and uploading
+here is an example of how to do that:
 
-assuming you have 'zip' and the aws cli installed, run the below to zip up your scripts and upload them
+```
+  var express = require('express');
+  var app = express();
+  var bodyParser = require('body-parser');
+  var fs = require('fs');
+  var path = require('path');
+  var vhost = require('vhost');
+  var buggy = require('buggy');
 
-```  
-#!/usr/bin/env bash
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use('/buggy', buggy);
 
-zip -qr ../buggy.zip *
-aws lambda update-function-code --function-name your-function-name --zip-file fileb://../buggy.zip
+  var server = app.listen(3000, function() {
+    var host = server.address().address;
+    var port = server.address().port;
+  });
 ```

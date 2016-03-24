@@ -4,7 +4,7 @@ var Command = require('../slack/command');
 
 // submit for review is 711
 // stop progress is 301
-var transition = new Command(/resolve|stop|start|close|reopen|review/, function(slack, jira, context) {
+var transition = new Command(/resolve|stop|start|close|reopen|review/, function(slack, jira) {
   var tokenized = /(resolve|stop|start|close|reopen|review)\s+([^\s]+)/.exec(slack.text.trim());
   var verb = tokenized[1];
   var issue = tokenized[2];
@@ -42,9 +42,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
 
     jira.issue.transitionIssue(options, function(err, confirm) {
       if (err) {
-        console.log(err);
-        var errMessage = new Message('oops. i was unable to transition the issue.');
-        response.send(slack.response_url, errMessage, context.done);
+        return new Message('oops. i was unable to transition the issue.');
       } else {
         var text = slack.command + ' ' + slack.text;
         var message = new Message(text);
@@ -55,15 +53,13 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
           fallback: slack.user_name + ' has transitioned ' + issue + ' to ' + verb,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message);
       }
     });
   } else if (user) {
-    var noMessage = new Message('i need a valid issue to transition.');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('i need a valid issue to transition.');
   } else {
-    var badMessage = new Message('you forgot to tell me which issue to transition.');
-    response.send(slack.response_url, badMessage, context.done);
+    return new Message('you forgot to tell me which issue to transition.');
   }
 });
 

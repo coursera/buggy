@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var search = new Command('search', function(slack, jira, context) {
+var search = new Command('search', function(slack, jira) {
   var tokenized = /(search\s*)?(.+)/.exec(slack.text.trim());
 
   if (tokenized.length > 2) {
@@ -17,7 +17,7 @@ var search = new Command('search', function(slack, jira, context) {
     jira.search.search({'jql':'text ~ "' + text + '" AND Status not in (Resolved, Closed)'}, function(err, results) {
       if (err) {
         var errMessage = new Message('i\'m sorry but i couldn\'t find anything. maybe it doesn\'t exist?');
-        response.send(slack.response_url, errMessage, context.done);
+        response.send(slack.response_url, errMessage);
       } else {
         var message = new Message(slack.command + ' ' + slack.text);
         message.setResponseType(true);
@@ -26,12 +26,11 @@ var search = new Command('search', function(slack, jira, context) {
           message.attachIssue(results.issues[i], true);
         }
 
-        response.sendTo(slack.user_name, message, context.done);
+        response.sendTo(slack.user_name, message);
       }
     });
   } else {
-    var noMessage = new Message('you forgot to tell me what to search for!');
-    response.send(slack.response_url, noMessage, context.done);
+    return new Message('you forgot to tell me what to search for!');
   }
 });
 

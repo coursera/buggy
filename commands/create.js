@@ -3,7 +3,7 @@ var Message = require('../slack/message');
 var Command = require('../slack/command');
 var SlackUtils = require('../slack/util');
 
-var create = new Command('create', function(slack, jira) {
+var create = new Command('create', function(slack, jira, config) {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
   
@@ -39,7 +39,7 @@ var create = new Command('create', function(slack, jira) {
           color: 'good'
         });
 
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else {

@@ -1,5 +1,3 @@
-var config = require('../config');
-
 var Message = function(text) {
   this.response = {};
 
@@ -40,11 +38,11 @@ Message.prototype.setChannel = function(channel) {
   this.response.channel = channel;
 };
 
-Message.prototype.attachIssue = function(issue, brief) {
+Message.prototype.attachIssue = function(issue, host, brief) {
   var attachment = {
     "title": issue.fields.summary ? issue.key + ': ' + issue.fields.summary : issue.key,
-    "title_link": 'https://' + config.jira.host + '/browse/' + issue.key,
-    "fallback": (issue.fields.summary || '') + 'https://' + config.jira.host + '/browse/' + issue.key,
+    "title_link": 'https://' + host + '/browse/' + issue.key,
+    "fallback": (issue.fields.summary || '') + 'https://' + host + '/browse/' + issue.key,
     //"thumb_url": issue.fields.project.avatar,
     //"pretext": "",
   };

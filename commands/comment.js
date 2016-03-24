@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var comment = new Command('comment', function(slack, jira) {
+var comment = new Command('comment', function(slack, jira, config) {
   var tokenized = /comment\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var comment = tokenized[2];
@@ -31,7 +31,7 @@ var comment = new Command('comment', function(slack, jira) {
           fallback: slack.user_name + ' commented on ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (comment) {

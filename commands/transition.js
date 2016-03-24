@@ -4,7 +4,7 @@ var Command = require('../slack/command');
 
 // submit for review is 711
 // stop progress is 301
-var transition = new Command(/resolve|stop|start|close|reopen|review/, function(slack, jira) {
+var transition = new Command(/resolve|stop|start|close|reopen|review/, function(slack, jira, config) {
   var tokenized = /(resolve|stop|start|close|reopen|review)\s+([^\s]+)/.exec(slack.text.trim());
   var verb = tokenized[1];
   var issue = tokenized[2];
@@ -53,7 +53,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
           fallback: slack.user_name + ' has transitioned ' + issue + ' to ' + verb,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (user) {

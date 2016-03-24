@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var filter = new Command('filter', function(slack, jira) {
+var filter = new Command('filter', function(slack, jira, config) {
   var tokenized = slack.text.trim().split(' ');
 
   if (tokenized.length > 1) {
@@ -19,10 +19,10 @@ var filter = new Command('filter', function(slack, jira) {
         message.setResponseType(true);
 
         for (var i = 0; i < Math.min(results.total, 10); i++) {
-          message.attachIssue(results.issues[i], true);
+          message.attachIssue(results.issues[i], config.jira.host, true);
         } 
 
-        response.sendTo(slack.user_name, message);
+        response.sendTo(slack.user_name, message, config.slack);
       }
     });
   } else {

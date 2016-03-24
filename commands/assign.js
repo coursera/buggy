@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('assign', function(slack, jira) {
+var assign = new Command('assign', function(slack, jira, config) {
   var tokenized = /assign\s+([^\s]+)\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[2];
   var user = tokenized[1].replace(/^@/, '');
@@ -39,7 +39,7 @@ var assign = new Command('assign', function(slack, jira) {
           fallback: slack.user_name + ' assigned ' + issue + ' to ' + user,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (user) {

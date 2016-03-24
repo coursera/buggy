@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var watch = new Command('watch', function(slack, jira) {
+var watch = new Command('watch', function(slack, jira, config) {
   var tokenized = /watch\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
@@ -23,7 +23,7 @@ var watch = new Command('watch', function(slack, jira) {
           fallback: slack.user_name + ' is now watching ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (user) {

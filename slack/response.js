@@ -1,5 +1,4 @@
 var request = require('request');
-var config = require('../config');
 var SlackApi = require('slack-node');
 
 module.exports = {
@@ -22,19 +21,19 @@ module.exports = {
     });
   },
 
-  sendTo: function(user, message) {
-    message.setUsername(config.slack.botName);
+  sendTo: function(user, message, config) {
+    message.setUsername(config.botName);
 
-    if (config.slack.botIconUrl) {
-      message.setIconUrl(config.slack.iconUrl);
+    if (config.botIconUrl) {
+      message.setIconUrl(config.iconUrl);
     } else {
-      message.setIconEmoji(config.slack.botIconEmoji)
+      message.setIconEmoji(config.botIconEmoji)
     }
 
     message.setChannel('@' + user);
 
     var options = {
-      url: config.slack.webhook,
+      url: config.webhook,
       method: 'POST',
       json: message.getResponse()
     };
@@ -50,10 +49,10 @@ module.exports = {
     });
   },
 
-  sendFrom: function(user_id, channel_id, message) {
+  sendFrom: function(user_id, channel_id, message, config) {
     message.setChannel(channel_id);
 
-    var slackApi = new SlackApi(config.slack.apiToken);
+    var slackApi = new SlackApi(config.apiToken);
     slackApi.api('users.info', {user:user_id}, function(err, res) {
 
       if (!err && res.user) {
@@ -62,7 +61,7 @@ module.exports = {
       }
 
       var options = {
-        url: config.slack.webhook,
+        url: config.webhook,
         method: 'POST',
         json: message.getResponse()
       };

@@ -5,7 +5,7 @@ var Command = require('../slack/command');
 var userCommand = require('./user');
 var searchCommand = require('./search');
 
-var get = new Command(/get/, function(slack, jira) {
+var get = new Command(/get/, function(slack, jira, config) {
   var tokenized = /(get\s*)?(.+)/.exec(slack.text.trim());
   var getIssue = tokenized ? tokenized[2] : '';
   var hasIssue = /(\w+)-(\d+)/.test(getIssue);
@@ -18,9 +18,9 @@ var get = new Command(/get/, function(slack, jira) {
       } else {
         var message = new Message(slack.command + ' ' + slack.text);
         message.setResponseType(true);
-        message.attachIssue(issue);
+        message.attachIssue(issue, config.jira.host);
 
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else {

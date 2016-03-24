@@ -76,6 +76,45 @@ install the package directly from github with npm
 npm install git@github.com:coursera/buggy.git
 ```
 
+## configure buggy
+
+copy config.js.template.txt into your module and add in your own parameters to authenticate to jira and slack
+
+below are the params you will need to define
+
+```
+{
+  slack: {
+    apiToken: '', // generate this on slack
+    token: '', // generate this on slack
+    webhook: '', // generate this on slack
+    botName: 'buggy', //name it whatever you want
+    botIconEmoji: 'bug' // assign the bot an emoji icon
+    // botIconUrl: '' // or assign it to some hosted image somewhere
+  },
+  jira: {
+    host: '',
+    basic_auth: {
+      /*
+      username: '',
+      password: '',
+      */
+      base64: ''
+    }
+    /*
+    oauth: {
+      token: '',
+      token_secret: '',
+      consumer_key: '',
+      private_key: '-----BEGIN RSA PRIVATE KEY-----\n' +
+                   'alskdjflaskjflsdf' +
+                   '-----END RSA PRIVATE KEY-----\n'
+    }
+    */
+  }
+};
+```
+
 ## wire up this router to an existing express server
 
 this module exposes a modular express router that can be wired up to any existing express router. 
@@ -90,10 +129,11 @@ here is an example of how to do that:
   var path = require('path');
   var vhost = require('vhost');
   var buggy = require('buggy');
+  var buggyConfig = require('./config.buggy.js');
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use('/buggy', buggy);
+  app.use('/buggy', buggy(config));
 
   var server = app.listen(3000, function() {
     var host = server.address().address;

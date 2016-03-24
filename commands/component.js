@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var component = new Command('component', function(slack, jira) {
+var component = new Command('component', function(slack, jira, config) {
   var tokenized = /component\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var components = tokenized[2];
@@ -39,7 +39,7 @@ var component = new Command('component', function(slack, jira) {
           fallback: slack.user_name + ' added components to ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (components) {

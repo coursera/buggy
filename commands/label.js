@@ -2,7 +2,7 @@ var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var label = new Command('label', function(slack, jira, context) {
+var label = new Command('label', function(slack, jira, context, config) {
   var tokenized = /label\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var labels = tokenized[2];
@@ -40,7 +40,7 @@ var label = new Command('label', function(slack, jira, context) {
           fallback: slack.user_name + ' added labels to ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, context.done);
+        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
       }
     });
   } else if (labels) {

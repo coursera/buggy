@@ -39,9 +39,8 @@ module.exports = function(config) {
       };
   
       if (!commandRun) {
-        if (commandDefault) {
-          params.text = params.text || ''; // ensure we don't pass null...
-          var message = commandDefault.run(params, jira, res);
+        if (commandDefault && params && params.text) {
+          var message = commandDefault.run(params, jira, config);
           if (message) {
             res.json(message.getResponse());
           } else {

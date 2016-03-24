@@ -25,9 +25,9 @@ var get = new Command(/get/, function(slack, jira, config) {
     });
   } else {
     if (/^@/.test(getIssue)) {
-      return userCommand.run(slack, jira);
+      return userCommand.run(slack, jira, config);
     } else if (/^("|“|').+("|'|”)$/.test(getIssue)) {
-      return searchCommand.run(slack, jira);
+      return searchCommand.run(slack, jira, config);
     } else if (!getIssue) {
       return new Message('yes?');
     } else {

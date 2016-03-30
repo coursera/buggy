@@ -43,7 +43,7 @@ var create = new Command('create', function(slack, jira, config) {
       }
     });
   } else {
-    return Message('i need a project and a description to create issues');
+    return new Message('i need a project and a description to create issues');
   }
 });
 

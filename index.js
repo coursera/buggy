@@ -39,7 +39,7 @@ module.exports = function(config) {
       };
   
       if (!commandRun) {
-        if (commandDefault && params && params.text) {
+        if (commandDefault && params) {
           var message = commandDefault.run(params, jira, config);
           if (message) {
             res.json(message.getResponse());

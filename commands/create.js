@@ -20,11 +20,11 @@ var create = new Command('create', function(slack, jira, config) {
     fields.issuetype = { name: "Bug" };
     fields.description = '';
 
-    for(let detail of detailsSplit) {
-      let detailSplit = detail.trim().split('=');
+    for(var detail of detailsSplit) {
+      var detailSplit = detail.trim().split('=');
       if (detailSplit.length == 2) {
-        let name = detailSplit[0];
-        let value = detailSplit[1];
+        var name = detailSplit[0];
+        var value = detailSplit[1];
         switch(name) {
           case 'labels':
             fields.labels = detail.labels.split(',').concat(["buggy-made-this"]);

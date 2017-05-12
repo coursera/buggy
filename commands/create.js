@@ -23,8 +23,8 @@ var create = new Command('create', function(slack, jira, config) {
     for(var detail of detailsSplit) {
       var detailSplit = detail.trim().split('=');
       if (detailSplit.length == 2) {
-        var name = detailSplit[0];
-        var value = detailSplit[1];
+        var name = detailSplit[0].trim();
+        var value = detailSplit[1].trim();
         switch(name) {
           case 'component':
           case 'components':
@@ -71,7 +71,7 @@ var create = new Command('create', function(slack, jira, config) {
           issueKey: issue.key,
           issue: {
             update: {
-              reporter:[{set: slack.user_name}]
+              reporter:[{set: {name: slack.user_name}}]
             }
           }
         };

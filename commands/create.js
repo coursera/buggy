@@ -16,10 +16,12 @@ var create = new Command('create', function(slack, jira, config) {
       description += '\n\nSlack conversation where this bug was reported: ' + slackPermalink;
     }
 
+    description += '\n\nSlack user who created this bug: ' + slack.user_name;
+
     var fields = {
       project: {key: projectKey},
       summary: summary,
-      reporter: {name: slack.user_name},
+      // reporter: {name: slack.user_name}, // causes problems
       labels: ["buggy-made-this"],
       issuetype: { name: "Bug" },
       description: description
@@ -39,7 +41,18 @@ var create = new Command('create', function(slack, jira, config) {
           color: 'good'
         });
 
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        var options = {
+          issueKey: issue.key,
+          issue: {
+            update: {
+              reporter:[{set: slack.user_name}]
+            }
+          }
+        };
+
+        jira.issue.editIssue(options, function(err, confirm) {
+          response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        });
       }
     });
   } else {

@@ -26,6 +26,14 @@ var create = new Command('create', function(slack, jira, config) {
         var name = detailSplit[0];
         var value = detailSplit[1];
         switch(name) {
+          case 'component':
+          case 'components':
+            fields.components = [];
+            for(var component of value.split(',')) {
+              fields.components.push({name:component});
+            }
+            break;
+          case 'label':
           case 'labels':
             fields.labels = detail.labels.split(',').concat(["buggy-made-this"]);
             break;

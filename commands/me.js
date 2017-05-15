@@ -4,7 +4,7 @@ var WebClient = require('@slack/client').WebClient;
 var SlackUtil = require('../slack/util');
 
 var me = new Command('me', (slack, jira, config, command) => {
-  var web = new WebClient(config.apiToken);
+  var web = new WebClient(config.slack.apiToken);
 
   web.users.info(slack.user_id, (slack_error, slack_results) => {
     if (slack_error) {
@@ -12,7 +12,7 @@ var me = new Command('me', (slack, jira, config, command) => {
       command.reply(slack.response_url, errMessage);
     } else {
       jira.search.search({'jql':`assignee = "${slack_results.user.profile.email}" AND resolution = Unresolved order by updated DESC`}, (jira_error, jira_results) => {
-        if (err) {
+        if (jira_error) {
           var errMessage = ('i\'m sorry but i having trouble looking up your bugs in jira');
           command.reply(slack.response_url, errMessage);
         } else {

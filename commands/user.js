@@ -9,7 +9,7 @@ var user = new Command('user', (slack, jira, config, command) => {
   var email = '';
   user = user.replace(/^@/, '');
 
-  var web = new WebClient(config.apiToken);
+  var web = new WebClient(config.slack.apiToken);
 
   web.users.list({presence:false}, (slack_error, slack_results) => {
     if (slack_error) {
@@ -23,7 +23,7 @@ var user = new Command('user', (slack, jira, config, command) => {
       }
       if (email) {
         jira.search.search({'jql':`assignee = "${email}" AND resolution = Unresolved order by updated DESC`}, (jira_error, jira_results) => {
-          if (err) {
+          if (jira_error) {
             var errMessage = `i'm sorry but i'm having trouble looking ${user} up in jira`;
             command.reply(slack.response_url, errMessage);
           } else {

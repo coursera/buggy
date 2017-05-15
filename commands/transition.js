@@ -3,12 +3,11 @@ var Command = require('../slack/command');
 
 // submit for review is 711
 // stop progress is 301
-var transition = new Command(/resolve|stop|start|close|reopen|review/, (slack, jira, config) => {
+var transition = new Command(/resolve|stop|start|close|reopen|review/, (slack, jira, config, command) => {
   var tokenized = /(resolve|stop|start|close|reopen|review)\s+([^\s]+)/.exec(slack.text.trim());
   var verb = tokenized[1];
   var issue = tokenized[2];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
-  var command = this;
 
   if (hasIssue) {
     var transitionId = '0';

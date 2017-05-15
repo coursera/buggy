@@ -4,7 +4,7 @@ var Command = require('../slack/command');
 var userCommand = require('./user');
 var searchCommand = require('./search');
 
-var get = new Command(/get/, (slack, jira, config) => {
+var get = new Command(/get/, (slack, jira, config, command) => {
   var tokenized = /(get\s*)?(.+)/.exec(slack.text.trim());
   var getIssue = tokenized ? tokenized[2] : '';
   var hasIssue = /(\w+)-(\d+)/.test(getIssue);

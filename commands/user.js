@@ -1,14 +1,14 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
+var WebClient = require('@slack/client').WebClient;
 
-var user = new Command('user', (slack, jira, config) => {
+var user = new Command('user', (slack, jira, config, command) => {
   var tokenized = /(user\s*)?(.+)/.exec(slack.text.trim());
   var user = tokenized[2];
   var email = '';
   user = user.replace(/^@/, '');
 
   var web = new WebClient(config.apiToken);
-  var command = this;
 
   web.users.list({presence:false}, (slack_error, slack_results) => {
     if (slack_error) {

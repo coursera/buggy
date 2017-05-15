@@ -1,12 +1,11 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('assign', (slack, jira, config) => {
+var assign = new Command('assign', (slack, jira, config, command) => {
   var tokenized = /assign\s+([^\s]+)\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[2];
   var user = tokenized[1].replace(/^@/, '');
   var hasIssue = /(\w+)-(\d+)/.test(issue);
-  var command = this;
 
   if (hasIssue) {
     var options = {

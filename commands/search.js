@@ -1,9 +1,8 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var search = new Command('search', (slack, jira, config) => {
+var search = new Command('search', (slack, jira, config, command) => {
   var tokenized = /(search\s*)?(.+)/.exec(slack.text.trim());
-  var command = this;
 
   if (tokenized.length > 2) {
     var text = tokenized[2];

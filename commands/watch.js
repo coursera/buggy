@@ -1,11 +1,10 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var watch = new Command('watch', (slack, jira, config) => {
+var watch = new Command('watch', (slack, jira, config, command) => {
   var tokenized = /watch\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
-  var command = this;
 
   if (hasIssue) {
     jira.issue.addWatcher({'issueKey':issue, 'watcher':slack.user_name}, (err, confirm) => {

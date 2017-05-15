@@ -1,3 +1,6 @@
+var WebClient = require('@slack/client').WebClient;
+var IncomingWebhook = require('@slack/client').IncomingWebhook;
+
 var Message = function(config) {
   this.options = {};
   this.config = config;

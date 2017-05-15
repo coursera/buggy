@@ -14,7 +14,7 @@ Command.prototype.setHelp = function(command, text) {
 };
 
 Command.prototype.run = function(slack, jira, context) {
-  return this.handler.apply(this, [slack, jira, context]);  
+  return this.handler(slack, jira, context, this);
 };
 
 Command.prototype.getHelp = function() {

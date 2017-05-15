@@ -2,10 +2,9 @@ var Message = require('../slack/message');
 var Command = require('../slack/command');
 var SlackUtils = require('../slack/util');
 
-var create = new Command('create', (slack, jira, config) => {
+var create = new Command('create', (slack, jira, config, command) => {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
-  var command = this;
   
   if (tokenized && tokenized.length >= 3) {
     var projectKey = tokenized[1].toUpperCase();

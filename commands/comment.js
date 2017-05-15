@@ -1,8 +1,7 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var comment = new Command('comment', (slack, jira, config) => {
-  var command = this;
+var comment = new Command('comment', (slack, jira, config, command) => {
   var tokenized = /comment\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var comment = tokenized[2];

@@ -4,8 +4,10 @@
 
 module.exports = {
   slack: {
-    apiToken: '', // generate this on slack
-    token: '', // generate this on slack
+    apiToken: '', // oauth token to make internal api calls
+    token: '', // webhook token
+    clientID: '',
+    clientSecrete: '',
     webhook: '', // generate this on slack
     botName: 'buggy', //name it whatever you want
     botIconEmoji: 'bug' // assign the bot an emoji icon

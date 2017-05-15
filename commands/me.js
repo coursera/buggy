@@ -1,9 +1,9 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
+var WebClient = require('@slack/client').WebClient;
 
-var me = new Command('me', (slack, jira, config) => {
+var me = new Command('me', (slack, jira, config, command) => {
   var web = new WebClient(config.apiToken);
-  var command = this;
 
   web.users.info(slack.user_id, (slack_error, slack_results) => {
     if (slack_error) {

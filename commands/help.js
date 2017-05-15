@@ -3,9 +3,8 @@ var Command = require('../slack/command');
 var fs = require('fs');
 var path = require('path');
 
-var help = new Command(/help/, (slack, jira) => {
+var help = new Command(/help/, (slack, jira, config, command) => {
   var tokenized = /help(?:\s+([^\s]+))?/.exec(slack.text.trim());
-  var command = this;
   var commands = tokenized[1];
 
   var fullHelp = !commands;

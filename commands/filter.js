@@ -1,9 +1,8 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var filter = new Command('filter', (slack, jira, config) => {
+var filter = new Command('filter', (slack, jira, config, command) => {
   var tokenized = slack.text.trim().split(' ');
-  var command = this;
 
   if (tokenized.length > 1) {
     tokenized.shift();

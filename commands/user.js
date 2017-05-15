@@ -30,6 +30,7 @@ var user = new Command('user', (slack, jira, config, command) => {
             var message = new Message(config.slack);
 
             if (jira_results.total > 0) {
+              message.setText(slack.command + ' ' + slack.text + `\n_${user} is assigned to ${jira_results.total} unresolved issues_\n`);
               for (var i = 0; i < Math.min(jira_results.total, 10); i++) {
                 message.addAttachment(SlackUtil.jiraIssueToAttachment(jira_results.issues[i], config.jira.host, true));
               }

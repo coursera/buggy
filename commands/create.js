@@ -55,7 +55,7 @@ var create = new Command('create', (slack, jira, config, command) => {
     jira.issue.createIssue({fields:fields}, function(err, issue) {
       if (err) {
         var errMessage = 'i was not able to create an issue because: ' + JSON.stringify(err);
-        command.reply(slack.response_url, errMessage, 'in_channel');
+        command.reply(slack.response_url, errMessage);
       } else {
         var message = new Message(config.slack);
         message.setText(slack.command + ' ' + slack.text);

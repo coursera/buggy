@@ -13,7 +13,7 @@ var filter = new Command('filter', (slack, jira, config, command) => {
     jira.search.search({'jql':jql}, function(err, results) {
       if (err) {
         var errMessage = ' ... looks like your filtered everything out!';
-        command.reply(slack.response_url, errMessage, 'in_channel');
+        command.reply(slack.response_url, errMessage);
       } else {
         var message = new Message(config.slack);
         message.setText(slack.command + ' ' + slack.text);

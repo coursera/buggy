@@ -16,7 +16,7 @@ var user = new Command('user', (slack, jira, config, command) => {
       var errMessage = `i'm sorry but i'm having trouble looking ${user} up in slack`;
       command.reply(slack.response_url, errMessage);
     } else {
-      for (var member in slack_results.members) {
+      for (var member of slack_results.members) {
         if (member.name == user) {
           email = member.profile.email;
         }
@@ -28,10 +28,13 @@ var user = new Command('user', (slack, jira, config, command) => {
             command.reply(slack.response_url, errMessage);
           } else {
             var message = new Message(config.slack);
-            message.setText(slack.command + ' ' + slack.text);
 
-            for (var i = 0; i < Math.min(jira_results.total, 10); i++) {
-              message.addAttachment(SlackUtil.jiraIssueToAttachment(jira_results.issues[i], config.jira.host, true));
+            if (jira_results.total > 0) {
+              for (var i = 0; i < Math.min(jira_results.total, 10); i++) {
+                message.addAttachment(SlackUtil.jiraIssueToAttachment(jira_results.issues[i], config.jira.host, true));
+              }
+            } else {
+              message.setText(`${user} doesn't have any unresolved issues! give them a hug.`);
             }
 
             message.postAsWebHook(slack.user_name);

@@ -1,12 +1,12 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var label = new Command('label', function(slack, jira, config) {
+var label = new Command('label', (slack, jira, config) => {
   var tokenized = /label\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var labels = tokenized[2];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
+  var command = this;
 
   if (hasIssue) {
     var options = {
@@ -25,26 +25,29 @@ var label = new Command('label', function(slack, jira, config) {
       }
     };
 
-    jira.issue.editIssue(options, function(err, confirm) {
+    jira.issue.editIssue(options, (err, confirm) => {
       if (err) {
-        return new Message('oops. i was unable to add any labels.');
+        return command.buildResponse('oops. i was unable to add any labels.');
       } else {
         var text = slack.command + ' ' + slack.text;
-        var message = new Message(text);
-        message.setResponseType(true);
+        var message = new Message(config.slack);
+        message.setText(text);
+        message.setReplyAll();
         message.addAttachment({
           title: slack.user_name + ' added labels to ' + issue,
           title_link: 'https://' + jira.host + '/browse/' + issue,
           fallback: slack.user_name + ' added labels to ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
       }
     });
   } else if (labels) {
-    return new Message('i need a valid issue to label.');
+    return command.buildResponse('i need a valid issue to label.');
   } else {
-    return new Message('you forgot to tell me the labels');
+    return command.buildResponse('you forgot to tell me the labels');
   }
 });
 

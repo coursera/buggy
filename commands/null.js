@@ -1,7 +1,6 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-module.exports = new Command('null', function(slack, jira) {
+module.exports = new Command('null', (slack, jira) => {
   return null;
 });

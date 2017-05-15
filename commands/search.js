@@ -1,9 +1,9 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var search = new Command('search', function(slack, jira, config) {
+var search = new Command('search', (slack, jira, config) => {
   var tokenized = /(search\s*)?(.+)/.exec(slack.text.trim());
+  var command = this;
 
   if (tokenized.length > 2) {
     var text = tokenized[2];
@@ -16,21 +16,23 @@ var search = new Command('search', function(slack, jira, config) {
 
     jira.search.search({'jql':'text ~ "' + text + '" AND Status not in (Resolved, Closed)'}, function(err, results) {
       if (err) {
-        var errMessage = new Message('i\'m sorry but i couldn\'t find anything. maybe it doesn\'t exist?');
-        response.send(slack.response_url, errMessage);
+        var errMessage = ('i\'m sorry but i couldn\'t find anything. maybe it doesn\'t exist?');
+        command.reply(slack.response_url, errMessage);
       } else {
-        var message = new Message(slack.command + ' ' + slack.text);
-        message.setResponseType(true);
+        var message = new Message(config.slack);
+        message.setText(slack.command + ' ' + slack.text);
 
         for (var i = 0; i < Math.min(results.total, 10); i++) {
           message.attachIssue(results.issues[i], config.jira.host, true);
         }
 
-        response.sendTo(slack.user_name, message, config.slack);
+        message.postAsWebHook(slack.user_name);
       }
     });
+
+    return command.buildResponse('okay, i\'m searching jira for you right now, gimme a sec');
   } else {
-    return new Message('you forgot to tell me what to search for!');
+    return command.buildResponse('you forgot to tell me what to search for!');
   }
 });
 

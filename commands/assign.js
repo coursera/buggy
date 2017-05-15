@@ -1,12 +1,12 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var assign = new Command('assign', function(slack, jira, config) {
+var assign = new Command('assign', (slack, jira, config) => {
   var tokenized = /assign\s+([^\s]+)\s+([^\s]+)/.exec(slack.text.trim());
   var issue = tokenized[2];
   var user = tokenized[1].replace(/^@/, '');
   var hasIssue = /(\w+)-(\d+)/.test(issue);
+  var command = this;
 
   if (hasIssue) {
     var options = {
@@ -25,27 +25,29 @@ var assign = new Command('assign', function(slack, jira, config) {
       }
     };
 
-    jira.issue.editIssue(options, function(err, confirm) {
+    jira.issue.editIssue(options, (err, confirm) => {
       if (err) {
-        var errMessage = new Message('oops. i was unable to complete the assignment.');
-        response.send(slack.response_url, errMessage);
+        var errMessage = 'oops. i was unable to complete the assignment.';
+        command.reply(slack.response_url, errMessage, 'in_channel');
       } else {
-        var text = slack.command + ' ' + slack.text;
-        var message = new Message(text);
-        message.setResponseType(true);
+        var message = new Message(config.slack);
+        message.setReplyAll();
+        message.setText(slack.command + ' ' + slack.text);
         message.addAttachment({
           title: slack.user_name + ' assigned ' + issue + ' to ' + '@' + user,
           title_link: 'https://' + jira.host + '/browse/' + issue,
           fallback: slack.user_name + ' assigned ' + issue + ' to ' + user,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
       }
     });
   } else if (user) {
-    return new Message('i need a valid issue to assign.');
+    return command.buildResponse('i need a valid issue to assign.');
   } else {
-    return new Message('you forgot to tell me what or who to assign.');
+    return command.buildResponse('you forgot to tell me what or who to assign.');
   }
 });
 

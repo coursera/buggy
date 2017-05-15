@@ -1,11 +1,11 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 var SlackUtils = require('../slack/util');
 
-var create = new Command('create', function(slack, jira, config) {
+var create = new Command('create', (slack, jira, config) => {
   var tokenized = /create (\w+) \s*([^|]+)(?:\s*\|\s*(.+)\s*)?/.exec(slack.text.trim());
   var slackPermalink = SlackUtils.createPermalink(slack.team_domain, slack.channel_name);
+  var command = this;
   
   if (tokenized && tokenized.length >= 3) {
     var projectKey = tokenized[1].toUpperCase();
@@ -55,10 +55,11 @@ var create = new Command('create', function(slack, jira, config) {
 
     jira.issue.createIssue({fields:fields}, function(err, issue) {
       if (err) {
-        var errMessage = new Message('i was not able to create an issue because: ' + JSON.stringify(err));
-        response.send(slack.response_url, errMessage);
+        var errMessage = 'i was not able to create an issue because: ' + JSON.stringify(err);
+        command.reply(slack.response_url, errMessage, 'in_channel');
       } else {
-        var message = new Message(slack.command + ' ' + slack.text);
+        var message = new Message(config.slack);
+        message.setText(slack.command + ' ' + slack.text);
         message.setResponseType(true);
         message.addAttachment({
           title: slack.user_name + ' created ' + issue.key,
@@ -66,6 +67,9 @@ var create = new Command('create', function(slack, jira, config) {
           fallback: slack.user_name + ' created ' + issue.key,
           color: 'good'
         });
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
 
         var options = {
           issueKey: issue.key,
@@ -76,13 +80,11 @@ var create = new Command('create', function(slack, jira, config) {
           }
         };
 
-        jira.issue.editIssue(options, function(err, confirm) {
-          response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
-        });
+        jira.issue.editIssue(options, (err, confirm) => {});
       }
     });
   } else {
-    return new Message('i need a project and a description to create issues');
+    return command.buildResponse('i need a project and a description to create issues');
   }
 });
 

@@ -1,3 +1,5 @@
+var request = require('request');
+
 var Command = function(matcher, handler) {
   this.matcher = matcher;
   this.handler = handler;
@@ -12,7 +14,7 @@ Command.prototype.setHelp = function(command, text) {
 };
 
 Command.prototype.run = function(slack, jira, context) {
-  return this.handler(slack, jira, context);  
+  return this.handler.apply(this, [slack, jira, context]);  
 };
 
 Command.prototype.getHelp = function() {
@@ -29,6 +31,40 @@ Command.prototype.isDefault = function() {
 
 Command.prototype.matches = function(command) {
   return (this.matcher instanceof RegExp) ? this.matcher.test(command) : this.matcher === command;
+};
+
+Command.prototype.buildResponse = function(text, response_type, attachments) {
+  var json = {
+    text: text
+  }
+
+  if (response_type) {
+    json.response_type = response_type;
+  }
+
+  if (attachments) {
+    json.attachments = attachments;
+  }
+
+  return json;
+};
+
+Command.prototype.reply = function(url, text, response_type, attachments) {
+  var options = {
+    url: url,
+    method: 'POST',
+    json: this.buildResponse(text, response_type, attachments)
+  };
+
+  return new Promise((resolve, reject) => { 
+    request(options, (error, res, body) => { 
+      if (error) {
+        reject(error);
+      } else {
+        resolve(res);
+      }
+    });
+  });
 };
 
 module.exports = Command;

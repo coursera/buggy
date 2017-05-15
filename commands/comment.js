@@ -1,8 +1,8 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var comment = new Command('comment', function(slack, jira, config) {
+var comment = new Command('comment', (slack, jira, config) => {
+  var command = this;
   var tokenized = /comment\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var comment = tokenized[2];
@@ -17,27 +17,29 @@ var comment = new Command('comment', function(slack, jira, config) {
       // }
     };
 
-    jira.issue.addComment({'issueKey':issue, 'comment':jiraComment}, function(err, confirm) {
+    jira.issue.addComment({'issueKey':issue, 'comment':jiraComment}, (err, confirm) => {
       if (err) {
-        var errMessage = new Message('oops. i was unable to add the comment.');
-        response.send(slack.response_url, errMessage);
+        var errMessage = 'oops. i was unable to add the comment.';
+        command.reply(slack.response_url, errMessage, 'in_channel');
       } else {
-        var text = slack.command + ' ' + slack.text;
-        var message = new Message(text);
-        message.setResponseType(true);
+        var message = new Message(config.slack);
+        message.setText(slack.command + ' ' + slack.text);
+        message.setReplyAll();
         message.addAttachment({
           title: slack.user_name + ' commented on ' + issue,
           title_link: 'https://' + jira.host + '/browse/' + issue,
           fallback: slack.user_name + ' commented on ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
       }
     });
   } else if (comment) {
-    return new Message('i need a valid issue to comment on.');
+    return command.buildResponse('i need a valid issue to comment on.');
   } else {
-    return new Message('you forgot to tell me what your comment is.');
+    return command.buildResponse('you forgot to tell me what your comment is.');
   }
 });
 

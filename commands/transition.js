@@ -1,14 +1,14 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
 // submit for review is 711
 // stop progress is 301
-var transition = new Command(/resolve|stop|start|close|reopen|review/, function(slack, jira, config) {
+var transition = new Command(/resolve|stop|start|close|reopen|review/, (slack, jira, config) => {
   var tokenized = /(resolve|stop|start|close|reopen|review)\s+([^\s]+)/.exec(slack.text.trim());
   var verb = tokenized[1];
   var issue = tokenized[2];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
+  var command = this;
 
   if (hasIssue) {
     var transitionId = '0';
@@ -40,26 +40,29 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, function(
       }
     };
 
-    jira.issue.transitionIssue(options, function(err, confirm) {
+    jira.issue.transitionIssue(options, (err, confirm) => {
       if (err) {
-        return new Message('oops. i was unable to transition the issue.');
+        return command.buildResponse('oops. i was unable to transition the issue.');
       } else {
         var text = slack.command + ' ' + slack.text;
-        var message = new Message(text);
-        message.setResponseType(true);
+        var message = new Message(config.slack);
+        message.setText(text);
+        message.setReplyAll();
         message.addAttachment({
           title: slack.user_name + ' has transitioned ' + issue + ' to ' + verb,
           title_link: 'https://' + jira.host + '/browse/' + issue,
           fallback: slack.user_name + ' has transitioned ' + issue + ' to ' + verb,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
       }
     });
   } else if (user) {
-    return new Message('i need a valid issue to transition.');
+    return command.buildResponse('i need a valid issue to transition.');
   } else {
-    return new Message('you forgot to tell me which issue to transition.');
+    return command.buildResponse('you forgot to tell me which issue to transition.');
   }
 });
 

@@ -1,74 +1,116 @@
-var Message = function(text) {
-  this.response = {};
-
-  this.setText(text);
-  this.setResponseType(false);
+var Message = function(config) {
+  this.options = {};
+  this.config = config;
 }
 
-Message.prototype.getResponse = function() {
-  return this.response;
+Message.prototype.getOptions = function() {
+  return this.options;
 };
 
 Message.prototype.setText = function(text) {
-  this.response.text = text;
+  this.text = text;
 };
 
-Message.prototype.setResponseType = function(inChannel) {
-  this.response.response_type = inChannel ? 'in_channel' : 'ephemeral';
-};
-
-Message.prototype.addAttachment = function(attachment) {
-  this.response.attachments = this.response.attachments || [];
-  this.response.attachments.push(attachment);
-};
-
-Message.prototype.setUsername = function(user) {
-  this.response.username = user;
-};
-
-Message.prototype.setIconUrl = function(url) {
-  this.response.icon_url = url;
-};
-
-Message.prototype.setIconEmoji = function(emoji) {
-  this.response.icon_emoji = ':' + emoji + ':';
+Message.prototype.getText = function(text) {
+  return this.text;
 };
 
 Message.prototype.setChannel = function(channel) {
-  this.response.channel = channel;
+  this.channel = channel;
 };
 
-Message.prototype.attachIssue = function(issue, host, brief) {
-  var attachment = {
-    "title": issue.fields.summary ? issue.key + ': ' + issue.fields.summary : issue.key,
-    "title_link": 'https://' + host + '/browse/' + issue.key,
-    "fallback": (issue.fields.summary || '') + 'https://' + host + '/browse/' + issue.key,
-    //"thumb_url": issue.fields.project.avatar,
-    //"pretext": "",
-  };
+Message.prototype.getChannel = function() {
+  return this.channel;
+};
 
-  if (issue.fields.status && issue.fields.priority) {
-    attachment.color = /Done|Resolved|Closed/.test(issue.fields.status.name) ? 'good' : 
-      /Critical|Major/.test(issue.fields.priority.name) ? 'danger' : 'warning'
-  };
+Message.prototype.setReplyAll = function() {
+  this.options.reply_broadcast = true;
+};
 
-  if (!brief) {
-    attachment.text = issue.fields.description || '';
-    attachment.fields = [
-      {
-        "title": "Assignee",
-        "value": issue.fields.assignee ? issue.fields.assignee.displayName : 'Unassigned',
-        "short": true 
-      },
-      {
-        "title": "Status",
-        "value": issue.fields.status ? issue.fields.status.name : 'Open',
-        "short": true 
+Message.prototype.setReplyTo = function(thread_ts) {
+  this.options.thread_ts = thread_ts;
+  this.options.reply_broadcast = true;
+};
+
+Message.prototype.addAttachment = function(attachment) {
+  this.options.attachments = this.options.attachments || [];
+  this.options.attachments.push(attachment);
+};
+
+Message.prototype.getAttachments = function(attachment) {
+  return this.options.attachments;
+};
+
+Message.prototype.setUsername = function(user) {
+  this.options.username = user;
+  this.options.as_user = true;
+};
+
+Message.prototype.setIconUrl = function(url) {
+  this.options.icon_url = url;
+};
+
+Message.prototype.setIconEmoji = function(emoji) {
+  this.options.icon_emoji = ':' + emoji + ':';
+};
+
+Message.prototype.post = function() {
+  var message = this;
+  var web = new WebClient(message.config.apiToken);
+
+  return new Promise((resolve, reject) => { 
+    web.chat.postMessage(message.channel, message.text, message.options, (error, res) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(res);
       }
-    ]
-  };
+    });
+  });
+}
 
-  this.addAttachment(attachment);
+Message.prototype.postAsWebHook = function(user) {
+  var message = this;
+  var webhook = new IncomingWebhook(message.config.webhook);
+  var payload = {};
+
+  if (message.text) {
+    payload.text = message.text;
+  }
+
+  if (message.options.attachments) {
+    payload.attachments = message.options.attachments;
+  }
+
+  if (message.channel) {
+    payload.channel = message.channel;
+  }
+
+  if (message.options.username) {
+    payload.username = message.options.username;
+  }
+
+  if (message.options.icon_emoji) {
+    payload.iconEmoji = message.options.icon_emoji;
+  }
+
+  if (message.options.icon_url) {
+    payload.iconUrl = message.options.icon_url;
+  }
+
+  if (message.options.username) {
+    payload.username = message.options.username;
+  }
+
+  return new Promise((resolve, reject) => { 
+    webhook.send(payload, (error, res) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(res);
+      }
+    });
+  });
 };
 
 module.exports = Message;

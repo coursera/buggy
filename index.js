@@ -28,7 +28,7 @@ module.exports = function(config) {
           var message = command.run(params, jira, config);
   
           if (message) {
-            res.json(message.getResponse());
+            res.json(message);
           } else {
             res.send('');
           }
@@ -42,7 +42,7 @@ module.exports = function(config) {
         if (commandDefault && params) {
           var message = commandDefault.run(params, jira, config);
           if (message) {
-            res.json(message.getResponse());
+            res.json(message);
           } else {
             res.send('');
           }

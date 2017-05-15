@@ -1,12 +1,12 @@
-var response = require('../slack/response');
 var Message = require('../slack/message');
 var Command = require('../slack/command');
 
-var component = new Command('component', function(slack, jira, config) {
+var component = new Command('component', (slack, jira, config) => {
   var tokenized = /component\s+([^\s]+)\s+(.+)/.exec(slack.text.trim());
   var issue = tokenized[1];
   var components = tokenized[2];
   var hasIssue = /(\w+)-(\d+)/.test(issue);
+  var command = this;
 
   if (hasIssue) {
     var options = {
@@ -27,11 +27,13 @@ var component = new Command('component', function(slack, jira, config) {
 
     jira.issue.editIssue(options, function(err, confirm) {
       if (err) {
-        var errMessage = new Message('oops. i was unable to add any components.');
-        response.send(slack.response_url, errMessage);
+        var errMessage = 'oops. i was unable to add any components.';
+        command.reply(slack.response_url, errMessage, 'in_channel');
       } else {
         var text = slack.command + ' ' + slack.text;
-        var message = new Message(text);
+
+        var message = new Message(config.slack);
+        message.setText(text);
         message.setResponseType(true);
         message.addAttachment({
           title: slack.user_name + ' added components to ' + issue,
@@ -39,13 +41,15 @@ var component = new Command('component', function(slack, jira, config) {
           fallback: slack.user_name + ' added components to ' + issue,
           color: 'good'
         });
-        response.sendFrom(slack.user_id, slack.channel_id, message, config.slack);
+        message.setChannel(slack.channel_id);
+        message.setUsername(slack.user_id);
+        message.post();
       }
     });
   } else if (components) {
-    return new Message('i need a valid issue to add a component.');
+    return command.buildResponse('i need a valid issue to add a component.');
   } else {
-    return new Message('you forgot to tell me the component');
+    return command.buildResponse('you forgot to tell me the component');
   }
 });
 

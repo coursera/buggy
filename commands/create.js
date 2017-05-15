@@ -59,7 +59,7 @@ var create = new Command('create', (slack, jira, config, command) => {
       } else {
         var message = new Message(config.slack);
         message.setText(slack.command + ' ' + slack.text);
-        message.setResponseType(true);
+        message.setReplyAll();
         message.addAttachment({
           title: slack.user_name + ' created ' + issue.key,
           title_link: 'https://' + jira.host + '/browse/' + issue.key,

@@ -50,6 +50,6 @@ var assign = new Command('assign', (slack, jira, config, command) => {
   }
 });
 
-assign.setHelp('assign @user issueKey', 'assign an issue to another user');
+assign.setHelp('assign _@user_ issueKey', 'assign an issue to another user');
 
 module.exports = assign;

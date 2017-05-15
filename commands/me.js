@@ -36,6 +36,6 @@ var me = new Command('me', (slack, jira, config, command) => {
   return command.buildResponse('okay, gimme a sec while i look for any unresolved issues you are working on');
 });
 
-me.setHelp("", "search for any unresolved issues assigned to you");
+me.setHelp("me", "search for any unresolved issues assigned to you");
 
 module.exports = me;

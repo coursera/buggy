@@ -51,6 +51,6 @@ var user = new Command('user', (slack, jira, config, command) => {
   return command.buildResponse('okay, gimme a sec while i look for any unresolved issues you are working on');
 });
 
-user.setHelp('@user', 'search for any unresolve issues assigned to a user');
+user.setHelp('_@user_', 'search for any unresolved issues assigned to a user');
 
 module.exports = user;

@@ -20,6 +20,7 @@ var help = new Command(/help/, (slack, jira, config, command) => {
         if (commandHelp) {
           if (fullHelp) {
             text += slack.command + ' ' + commandHelp.command + '\n';
+            text += commandHelp.text + '\n\n';
           } else if (module.matches(commands)) {
             text += slack.command + ' ' + commandHelp.command + '\n' + commandHelp.text + '\n';
           }

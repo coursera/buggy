@@ -72,7 +72,7 @@ Message.prototype.post = function() {
   });
 }
 
-Message.prototype.postAsWebHook = function(user) {
+Message.prototype.postAsWebHook = function() {
   var message = this;
   var webhook = new IncomingWebhook(message.config.webhook);
   var payload = {};

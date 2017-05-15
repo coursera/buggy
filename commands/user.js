@@ -38,7 +38,8 @@ var user = new Command('user', (slack, jira, config, command) => {
               message.setText(`${user} doesn't have any unresolved issues! give them a hug.`);
             }
 
-            message.postAsWebHook(slack.user_name);
+            message.setChannel('@' + slack.user_name);
+            message.post();
           }
         });
       } else {

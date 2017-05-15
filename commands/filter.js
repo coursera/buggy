@@ -23,7 +23,8 @@ var filter = new Command('filter', (slack, jira, config, command) => {
           message.addAttachment(SlackUtil.jiraIssueToAttachment(results.issues[i], config.jira.host, true));
         } 
 
-        message.postAsWebHook(slack.user_name);
+        message.setChannel('@' + slack.user_name);
+        message.post();
       }
     });
   } else {

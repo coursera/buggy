@@ -27,7 +27,8 @@ var me = new Command('me', (slack, jira, config, command) => {
             message.setText('you don\'t have any unresolved assigned issues! you are my hero.');
           }
 
-          message.postAsWebHook(slack.user_name);
+          message.setChannel('@' + slack.user_name);
+          message.post();
         }
       });
     }

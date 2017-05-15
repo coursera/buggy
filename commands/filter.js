@@ -1,5 +1,6 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
+var SlackUtil = require('../slack/util');
 
 var filter = new Command('filter', (slack, jira, config, command) => {
   var tokenized = slack.text.trim().split(' ');
@@ -19,7 +20,7 @@ var filter = new Command('filter', (slack, jira, config, command) => {
         message.setReplyAll();
 
         for (var i = 0; i < Math.min(results.total, 10); i++) {
-          message.attachIssue(results.issues[i], config.jira.host, true);
+          message.addAttachment(SlackUtil.jiraIssueToAttachment(results.issues[i], config.jira.host, true));
         } 
 
         message.postAsWebHook(slack.user_name);

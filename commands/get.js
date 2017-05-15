@@ -1,5 +1,6 @@
 var Message = require('../slack/message');
 var Command = require('../slack/command');
+var SlackUtil = require('../slack/util');
 
 var userCommand = require('./user');
 var searchCommand = require('./search');
@@ -19,7 +20,7 @@ var get = new Command(/get/, (slack, jira, config, command) => {
         message.setText(slack.command + ' ' + slack.text);
         message.setReplyAll();
         message.setUsername(slack.user_id);
-        message.attachIssue(issue, config.jira.host);
+        message.addAttachment(SlackUtil.jiraIssueToAttachment(issue, config.jira.host));
         message.setChannel(slack.channel_id);
         message.post();
       }

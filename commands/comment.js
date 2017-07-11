@@ -31,7 +31,7 @@ var comment = new Command('comment', (slack, jira, config, command) => {
           color: 'good'
         });
         message.setChannel(slack.channel_id);
-        message.setUsername(slack.user_id);
+        message.setUsername(slack.user_name);
         message.post();
       }
     });

@@ -19,7 +19,7 @@ var get = new Command(/get/, (slack, jira, config, command) => {
         var message = new Message(config.slack);
         message.setText(slack.command + ' ' + slack.text);
         message.setReplyAll();
-        message.setUsername(slack.user_id);
+        message.setUsername(slack.user_name);
         message.addAttachment(SlackUtil.jiraIssueToAttachment(issue, config.jira.host));
         message.setChannel(slack.channel_id);
         message.post();

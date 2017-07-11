@@ -46,7 +46,7 @@ Message.prototype.getAttachments = function(attachment) {
 
 Message.prototype.setUsername = function(user) {
   this.options.username = user;
-  this.options.as_user = true;
+  // this.options.as_user = true;
 };
 
 Message.prototype.setIconUrl = function(url) {

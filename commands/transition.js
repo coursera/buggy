@@ -54,7 +54,7 @@ var transition = new Command(/resolve|stop|start|close|reopen|review/, (slack, j
           color: 'good'
         });
         message.setChannel(slack.channel_id);
-        message.setUsername(slack.user_id);
+        message.setUsername(slack.user_name);
         message.post();
       }
     });
